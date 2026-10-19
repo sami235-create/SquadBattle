@@ -1,0 +1,324 @@
+<!doctype html><html lang="sv"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>SquadBattle 5.1 — Ultimate Squad Builder</title><style>:root{font-family:system-ui,Arial;background:#07130f;color:#eaffef}*{box-sizing:border-box}body{margin:0}header{background:#10291e;padding:18px 4%;display:flex;justify-content:space-between;align-items:center;border-bottom:2px solid #2b9d67}h1{margin:0;color:#7ef3a6;font-size:24px}main{max-width:1100px;margin:auto;padding:20px;display:grid;grid-template-columns:1.2fr 1fr;gap:20px}.panel{background:#10251c;border:1px solid #27543b;border-radius:16px;padding:18px}input,select,button{font:inherit;border-radius:9px;padding:11px;border:1px solid #397452;background:#193d2c;color:white}button{cursor:pointer;background:#1e8d57;border:0;font-weight:700}button:hover{background:#2cad70}button:disabled{cursor:not-allowed;opacity:.7}.muted{color:#b0cbbb;font-size:13px}.pitch{position:relative;background:repeating-linear-gradient(0deg,#195d3d 0 64px,#1a6744 64px 128px);height:520px;border:2px solid #b1d7b9;border-radius:10px;margin-top:12px;overflow:hidden}.pitch:before{content:'';position:absolute;border:2px solid #a4cfb2;inset:12px;pointer-events:none}.pitch:after{content:'';position:absolute;width:110px;height:110px;border:2px solid #a4cfb2;border-radius:50%;top:50%;left:50%;transform:translate(-50%,-50%);pointer-events:none}.slot{position:absolute;transform:translate(-50%,-50%);width:94px;min-height:52px;background:#0a231bcc;border:2px solid #e6cc75;border-radius:10px;padding:6px 3px;text-align:center;font-size:11px;z-index:1}.slot strong{display:block;font-size:12px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.slot small{color:#f3d784}.row{display:flex;gap:8px;flex-wrap:wrap;margin:10px 0}.row>*{flex:1;min-width:110px}.score{font-size:55px;font-weight:900;color:#8df3b0}.results{max-height:350px;overflow:auto}.player{display:flex;align-items:center;justify-content:space-between;gap:8px;border-bottom:1px solid #2a4d39;padding:9px 0}.player button{padding:8px}.teams{margin-top:15px}.team{display:flex;justify-content:space-between;align-items:center;padding:9px;border-bottom:1px solid #2a4d39;gap:7px}.team button{padding:6px 9px}.tag{font-size:12px;color:#ffd878}@media(max-width:760px){main{display:block;padding:12px}.panel{margin-bottom:14px}.pitch{height:480px}.slot{width:78px;font-size:10px}.slot strong{font-size:10px}}
+@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800;900&display=swap');
+:root{font-family:Outfit,system-ui,Arial;background:#080c1c;color:#eef4ff}
+body{background:radial-gradient(ellipse at 15% 5%,#272062 0,transparent 37%),radial-gradient(ellipse at 85% 25%,#123f5a 0,transparent 42%),#080c1c;min-height:100vh}
+header{background:#0b1029db;border-bottom:1px solid #5560a44f;box-shadow:0 10px 50px #050713aa;backdrop-filter:blur(16px);padding:16px 4%;gap:15px}
+h1{color:white;letter-spacing:-1px;font-weight:900;font-size:clamp(21px,3vw,31px)}h1:first-letter{color:#a5ff4c}
+.topnav{display:flex;align-items:center;gap:15px}.navtag{color:#c2cbea;font-size:13px}
+.rare-btn{background:linear-gradient(110deg,#ffcc48,#ff719a,#8c61ff);color:#151027;border-radius:14px;padding:12px 18px;box-shadow:0 7px 27px #ec63a64d;white-space:nowrap;font-weight:900;letter-spacing:.4px}.rare-btn:hover{background:linear-gradient(110deg,#ffe16d,#ff91b0,#ad83ff);transform:translateY(-2px)}
+#rarecount{background:#14102236;border-radius:8px;padding:4px 7px;margin-left:5px}
+main{max-width:1320px;grid-template-columns:1.1fr 1fr;gap:22px;padding:27px 18px}.panel{background:linear-gradient(150deg,#171d3bed,#101a31ed);border:1px solid #5d71ad50;border-radius:24px;padding:24px;box-shadow:0 18px 50px #02040c88}.panel h2{letter-spacing:-.5px}.panel h2:first-child{margin-top:0}
+input,select{background:#0d1632;color:#f6f8ff;border:1px solid #6477a36b;border-radius:12px}input:focus,select:focus{outline:2px solid #8d77ff}button{transition:transform .18s,filter .18s;background:linear-gradient(110deg,#7367ff,#9e55ef);border-radius:12px}button:hover{filter:brightness(1.14)}.muted{color:#aab9d6;line-height:1.5}.pitch{background:repeating-linear-gradient(0deg,#13765c 0 65px,#168666 65px 130px);box-shadow:inset 0 0 90px #032d2d;border:2px solid #9affd1;border-radius:18px}.slot{background:linear-gradient(145deg,#172044ef,#122f37ef);border:2px solid #d2ff78;border-radius:13px;box-shadow:0 7px 20px #041e21a8}.slot:hover{transform:translate(-50%,-50%) scale(1.05)}.slot small{color:#bfff90}.score{color:#b5ff65;text-shadow:0 0 30px #b5ff6555}.player{border-bottom:1px solid #6374a42e}.player button{background:linear-gradient(110deg,#11bd9e,#2b8fce)}.tag{color:#ffd477}.team{border-bottom:1px solid #6374a42e}
+.overlay{position:fixed;inset:0;z-index:30;background:#030510db;backdrop-filter:blur(12px);display:none;overflow-y:auto;padding:28px 15px}.overlay.show{display:flex;align-items:flex-start;justify-content:center}.rare-window{width:min(1050px,100%);margin:auto;background:linear-gradient(145deg,#1e204b,#0d1532 70%);border:1px solid #947cfc7a;border-radius:27px;box-shadow:0 30px 100px #000b;padding:clamp(18px,3vw,35px)}.rare-head{display:flex;justify-content:space-between;gap:20px;align-items:flex-start;margin-bottom:23px}.eyebrow{font-size:11px;letter-spacing:2.5px;color:#e2b6ff;font-weight:800}.rare-head h2{font-size:clamp(31px,5vw,52px);line-height:1;margin:12px 0;color:white;letter-spacing:-2px;font-weight:900}.rare-head em{font-style:normal;background:linear-gradient(100deg,#ffe268,#ff79ad,#9e82ff);background-clip:text;color:transparent}.rare-head p{color:#bdc7e8;margin:0}.close{background:#34385f;border:1px solid #7780aa;padding:11px 16px}.raregrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:15px}.rarecard{border:1px solid #9e8eec80;background:linear-gradient(145deg,#332754,#191e41);border-radius:18px;overflow:hidden;box-shadow:0 12px 30px #0005;transition:transform .2s}.rarecard:hover{transform:translateY(-5px)}.rarecard.unlocked{border-color:#b5ff75;box-shadow:0 0 28px #b5ff7520}.portrait{height:205px;position:relative;overflow:hidden;background:radial-gradient(circle at 50% 40%,#b176db,#543c9b 55%,#241e54);display:flex;align-items:center;justify-content:center}.rarecard:nth-child(2) .portrait{background:radial-gradient(circle,#73baff,#3754ab 60%,#152a65)}.rarecard:nth-child(3) .portrait{background:radial-gradient(circle,#ffcf74,#b56464 60%,#52234e)}.rarecard:nth-child(4) .portrait{background:radial-gradient(circle,#d4b8ff,#7556a9 60%,#39245e)}.rarecard:nth-child(5) .portrait{background:radial-gradient(circle,#fce69e,#aa7a35 60%,#47321d)}.portraitfallback{font-size:65px;font-weight:900;color:#ffffff42}.portrait img{position:absolute;width:100%;height:100%;object-fit:cover;object-position:top center}.rarity{position:absolute;top:11px;left:10px;background:#100d24ce;border:1px solid #ffdd8a;color:#ffdc87;padding:5px 9px;border-radius:7px;font-size:10px;font-weight:900;letter-spacing:1px}.rarebody{padding:15px}.rarebody h3{font-size:18px;margin:0 0 4px}.rarebody p{color:#c3c8e9;font-size:12px;margin:0 0 16px}.progress{height:7px;background:#090e27;border-radius:8px;overflow:hidden}.progress span{display:block;height:100%;background:linear-gradient(90deg,#6be7d2,#c6ff70);border-radius:8px}.rarebody small{display:block;font-size:11px;color:#c7cce8;margin:8px 0 13px}.rarebody button{width:100%;padding:10px 5px;font-size:12px;background:linear-gradient(110deg,#c6ff70,#63ddc9);color:#11233a}.rarebody button:disabled{background:#303456;color:#d0cbe2;opacity:1}.rarefoot{font-size:12px;color:#aeb9df;margin:22px 0 0;line-height:1.6}
+@media(max-width:760px){.navtag{display:none}header{padding:13px 12px}.rare-btn{padding:10px;font-size:12px}main{padding:12px}.panel{padding:15px;border-radius:18px}.raregrid{grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}.portrait{height:155px}.rarebody{padding:10px}.rarebody h3{font-size:15px}.rare-head h2{letter-spacing:-1px}.overlay{padding:10px}.rare-window{border-radius:17px;padding:14px}}
+#spinmodal .rare-window{max-width:580px;text-align:center}#wheelbox{position:relative;width:min(350px,85vw);height:min(350px,85vw);margin:15px auto}#wheelcanvas{width:100%;height:100%;filter:drop-shadow(0 0 18px #9a60ff88)}#wheelpointer{position:absolute;left:50%;top:-13px;transform:translateX(-50%);font-size:37px;z-index:4;color:#fff0a0;text-shadow:0 2px 8px #000}#spincenter{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);width:84px;height:84px;border-radius:50%;border:5px solid #fff4ba;background:linear-gradient(140deg,#fff2a4,#f8a52b);color:#3b2551;font-size:19px;font-weight:1000;box-shadow:0 0 0 5px #4c236f,0 5px 22px #0008;z-index:5;cursor:pointer}#spincenter:disabled{opacity:.85;cursor:not-allowed}#spinresult{font-size:20px;min-height:36px;color:#fbe184;font-weight:900}#spintimer{color:#c5d1f3;font-size:13px}header .topnav{flex-wrap:wrap;justify-content:flex-end}@media(max-width:760px){header .topnav{gap:5px}#wallet{font-size:12px}#spinbtn{font-size:11px}}
+</style></head><body><header><h1>⚽ SquadBattle <span style="font-size:12px;color:white">5.5</span></h1><nav class="topnav"><span class="navtag">🏆 Bygg. Betygsätt. Tävla.</span><button id="spinbtn" class="rare-btn" style="background:linear-gradient(110deg,#24d5d0,#7764ff);color:white">🎡 DAILY SPIN</button><span id="wallet" style="font-weight:900;color:#ffe17b">🪙 0</span><button id="rarebtn" class="rare-btn">✦ UNLOCK RARE <span id="rarecount">0/5</span></button></nav></header><main><section class="panel"><h2>Mitt drömlag</h2><div class="row"><input id="teamname" placeholder="Lagets namn" value="Mitt drömlag"><select id="formation"><option>4-3-3</option><option>4-4-2</option><option>3-5-2</option></select></div><div class="pitch" id="pitch"></div><h2>Lagstyrka: <span class="score" id="score">0%</span></h2><p class="muted" id="breakdown">Välj 11 spelare. 80 % är elitnivå och mycket svårt att nå.</p><div class="row"><button id="save">💾 Spara lag</button><button id="reset">🔄 Börja om</button></div></section><section class="panel"><h2 id="picktitle">Välj en position</h2><p class="muted">Max 2 spelare från samma klubb. Positionerna filtreras automatiskt. Lås upp legender genom att spara starka lag! Tryck på en position på planen, sök sedan efter en spelare. Spelarbetygen är ungefärliga spelvärden, inte officiella livebetyg.</p><input id="search" style="width:100%" placeholder="🔎 Sök spelare, klubb eller land..."><div class="row"><button id="loadbig" type="button" style="background:linear-gradient(120deg,#0bd2a4,#7758ef);color:#fff">📚 Ladda stor spelardatabas</button></div><div class="row"><button id="searchmore" type="button" style="background:linear-gradient(120deg,#00bfa5,#7161ff);color:white">🌍 Sök fler spelare</button></div><div class="row"><select id="league"><option value="">Alla ligor</option></select><select id="sort"><option value="rating">Högst betyg</option><option value="name">Namn A–Ö</option></select></div><p class="muted" id="unlockstatus"></p><p class="muted" id="searchstatus" aria-live="polite">Sök bland inbyggda spelare. Tryck på 📚 för att läsa in en mycket större databas (kräver internet, kan ta en stund).</p><div id="results" class="results"></div><h2>🏆 Vännernas topplista</h2><p class="muted">Spara flera lag på samma enhet och jämför. Onlinekonton kommer senare.</p><div id="teams" class="teams"></div></section></main><div id="raremodal" class="overlay" role="dialog" aria-modal="true" aria-label="Rare players"><div class="rare-window"><div class="rare-head"><div><span class="eyebrow">SQUADBATTLE · HALL OF FAME</span><h2>✦ UNLOCK <em>RARE</em></h2><p>Bygg ett mästarlag. Lås upp fotbollens största ikoner.</p></div><button id="closeRare" class="close" aria-label="Stäng">✕</button></div><div class="raregrid" id="raregrid"></div><p class="rarefoot">🔐 Nå rätt procent OCH samla SB Coins för att köpa en legend permanent på den här enheten. Bilder hämtas från Wikipedia när du är online.</p></div></div><div id="spinmodal" class="overlay" role="dialog" aria-modal="true" aria-label="Daily Spin"><div class="rare-window"><div class="rare-head"><div><span class="eyebrow">SQUADBATTLE · DAILY REWARDS</span><h2>🎡 <em>DAILY SPIN</em></h2><p>Tryck på SPIN mitt i hjulet. Ett gratis snurr var 24:e timme.</p></div><button id="closespin" class="close">✕</button></div><div id="wheelbox"><canvas id="wheelcanvas" width="700" height="700"></canvas><div id="wheelpointer">▼</div><button id="spincenter">SPIN</button></div><div id="spinresult"></div><p id="spintimer"></p><p class="rarefoot">🪙 SB Coins är bara spelvaluta och kan inte köpas för riktiga pengar. Vinster sparas lokalt på denna enhet.</p></div></div><script>
+const data=`Kylian Mbappé|ST|91|Real Madrid|La Liga|France
+Erling Haaland|ST|91|Manchester City|Premier League|Norway
+Mohamed Salah|RW|90|Liverpool|Premier League|Egypt
+Vinícius Júnior|LW|90|Real Madrid|La Liga|Brazil
+Jude Bellingham|CAM|90|Real Madrid|La Liga|England
+Lamine Yamal|RW|89|Barcelona|La Liga|Spain
+Harry Kane|ST|90|Bayern Munich|Bundesliga|England
+Rodri|CDM|90|Manchester City|Premier League|Spain
+Pedri|CM|89|Barcelona|La Liga|Spain
+Raphinha|RW|88|Barcelona|La Liga|Brazil
+Robert Lewandowski|ST|88|Barcelona|La Liga|Poland
+Bukayo Saka|RW|88|Arsenal|Premier League|England
+Declan Rice|CDM|88|Arsenal|Premier League|England
+Virgil van Dijk|CB|89|Liverpool|Premier League|Netherlands
+William Saliba|CB|87|Arsenal|Premier League|France
+Gabriel Magalhães|CB|87|Arsenal|Premier League|Brazil
+Alisson Becker|GK|89|Liverpool|Premier League|Brazil
+Thibaut Courtois|GK|89|Real Madrid|La Liga|Belgium
+Gianluigi Donnarumma|GK|89|Manchester City|Premier League|Italy
+Marc-André ter Stegen|GK|85|Barcelona|La Liga|Germany
+Achraf Hakimi|RB|88|PSG|Ligue 1|Morocco
+Nuno Mendes|LB|87|PSG|Ligue 1|Portugal
+Ousmane Dembélé|RW|90|PSG|Ligue 1|France
+Vitinha|CM|89|PSG|Ligue 1|Portugal
+Khvicha Kvaratskhelia|LW|87|PSG|Ligue 1|Georgia
+João Neves|CM|87|PSG|Ligue 1|Portugal
+Marquinhos|CB|86|PSG|Ligue 1|Brazil
+Bradley Barcola|LW|85|PSG|Ligue 1|France
+Jamal Musiala|CAM|88|Bayern Munich|Bundesliga|Germany
+Michael Olise|RW|87|Bayern Munich|Bundesliga|France
+Joshua Kimmich|CDM|87|Bayern Munich|Bundesliga|Germany
+Dayot Upamecano|CB|85|Bayern Munich|Bundesliga|France
+Alphonso Davies|LB|85|Bayern Munich|Bundesliga|Canada
+Florian Wirtz|CAM|88|Liverpool|Premier League|Germany
+Alexander Isak|ST|88|Liverpool|Premier League|Sweden
+Dominik Szoboszlai|CM|85|Liverpool|Premier League|Hungary
+Alexis Mac Allister|CM|86|Liverpool|Premier League|Argentina
+Ryan Gravenberch|CDM|85|Liverpool|Premier League|Netherlands
+Cody Gakpo|LW|84|Liverpool|Premier League|Netherlands
+Federico Chiesa|RW|82|Liverpool|Premier League|Italy
+Trent Alexander-Arnold|RB|86|Real Madrid|La Liga|England
+Federico Valverde|CM|89|Real Madrid|La Liga|Uruguay
+Aurélien Tchouaméni|CDM|86|Real Madrid|La Liga|France
+Eduardo Camavinga|CM|85|Real Madrid|La Liga|France
+Arda Güler|CAM|85|Real Madrid|La Liga|Turkey
+Antonio Rüdiger|CB|87|Real Madrid|La Liga|Germany
+Éder Militão|CB|85|Real Madrid|La Liga|Brazil
+Dean Huijsen|CB|83|Real Madrid|La Liga|Spain
+Dani Carvajal|RB|84|Real Madrid|La Liga|Spain
+Frenkie de Jong|CM|86|Barcelona|La Liga|Netherlands
+Gavi|CM|84|Barcelona|La Liga|Spain
+Fermín López|CAM|84|Barcelona|La Liga|Spain
+Jules Koundé|RB|86|Barcelona|La Liga|France
+Pau Cubarsí|CB|85|Barcelona|La Liga|Spain
+Alejandro Balde|LB|84|Barcelona|La Liga|Spain
+Ronald Araújo|CB|85|Barcelona|La Liga|Uruguay
+Ferran Torres|ST|83|Barcelona|La Liga|Spain
+Martin Ødegaard|CAM|88|Arsenal|Premier League|Norway
+Viktor Gyökeres|ST|87|Arsenal|Premier League|Sweden
+Kai Havertz|ST|84|Arsenal|Premier League|Germany
+Eberechi Eze|CAM|85|Arsenal|Premier League|England
+David Raya|GK|86|Arsenal|Premier League|Spain
+Jurriën Timber|RB|85|Arsenal|Premier League|Netherlands
+Riccardo Calafiori|LB|84|Arsenal|Premier League|Italy
+Phil Foden|CAM|87|Manchester City|Premier League|England
+Bernardo Silva|CM|86|Manchester City|Premier League|Portugal
+Rúben Dias|CB|87|Manchester City|Premier League|Portugal
+Joško Gvardiol|LB|86|Manchester City|Premier League|Croatia
+Rayan Cherki|CAM|84|Manchester City|Premier League|France
+Tijjani Reijnders|CM|85|Manchester City|Premier League|Netherlands
+Jeremy Doku|LW|84|Manchester City|Premier League|Belgium
+Omar Marmoush|ST|84|Manchester City|Premier League|Egypt
+Cole Palmer|CAM|88|Chelsea|Premier League|England
+Enzo Fernández|CM|86|Chelsea|Premier League|Argentina
+Moisés Caicedo|CDM|87|Chelsea|Premier League|Ecuador
+Reece James|RB|84|Chelsea|Premier League|England
+Pedro Neto|RW|83|Chelsea|Premier League|Portugal
+João Pedro|ST|84|Chelsea|Premier League|Brazil
+Estevão|RW|82|Chelsea|Premier League|Brazil
+Bruno Fernandes|CAM|87|Manchester United|Premier League|Portugal
+Bryan Mbeumo|RW|85|Manchester United|Premier League|Cameroon
+Matheus Cunha|ST|84|Manchester United|Premier League|Brazil
+Amad Diallo|RW|83|Manchester United|Premier League|Ivory Coast
+Casemiro|CDM|81|Manchester United|Premier League|Brazil
+Cristian Romero|CB|86|Tottenham|Premier League|Argentina
+James Maddison|CAM|83|Tottenham|Premier League|England
+Son Heung-min|LW|85|LAFC|MLS|South Korea
+Lionel Messi|RW|88|Inter Miami|MLS|Argentina
+Luis Suárez|ST|81|Inter Miami|MLS|Uruguay
+Rodrigo De Paul|CM|84|Inter Miami|MLS|Argentina
+Cristiano Ronaldo|ST|85|Al Nassr|Saudi Pro League|Portugal
+Sadio Mané|LW|83|Al Nassr|Saudi Pro League|Senegal
+João Félix|CAM|82|Al Nassr|Saudi Pro League|Portugal
+Karim Benzema|ST|85|Al Ittihad|Saudi Pro League|France
+N'Golo Kanté|CDM|83|Al Ittihad|Saudi Pro League|France
+Riyad Mahrez|RW|84|Al Ahli|Saudi Pro League|Algeria
+Ivan Toney|ST|83|Al Ahli|Saudi Pro League|England
+Kalidou Koulibaly|CB|83|Al Hilal|Saudi Pro League|Senegal
+Sergej Milinković-Savić|CM|84|Al Hilal|Saudi Pro League|Serbia
+Darwin Núñez|ST|83|Al Hilal|Saudi Pro League|Uruguay
+Lautaro Martínez|ST|88|Inter|Serie A|Argentina
+Marcus Thuram|ST|85|Inter|Serie A|France
+Nicolò Barella|CM|87|Inter|Serie A|Italy
+Hakan Çalhanoğlu|CDM|86|Inter|Serie A|Turkey
+Alessandro Bastoni|CB|87|Inter|Serie A|Italy
+Federico Dimarco|LB|86|Inter|Serie A|Italy
+Mike Maignan|GK|86|AC Milan|Serie A|France
+Rafael Leão|LW|86|AC Milan|Serie A|Portugal
+Christian Pulisic|RW|85|AC Milan|Serie A|USA
+Santiago Giménez|ST|82|AC Milan|Serie A|Mexico
+Luka Modrić|CM|83|AC Milan|Serie A|Croatia
+Christian Eriksen|CM|80|Wolfsburg|Bundesliga|Denmark
+Kenan Yıldız|LW|85|Juventus|Serie A|Turkey
+Dušan Vlahović|ST|83|Juventus|Serie A|Serbia
+Bremer|CB|85|Juventus|Serie A|Brazil
+Jonathan David|ST|84|Juventus|Serie A|Canada
+Scott McTominay|CM|85|Napoli|Serie A|Scotland
+Romelu Lukaku|ST|83|Napoli|Serie A|Belgium
+Kevin De Bruyne|CAM|87|Napoli|Serie A|Belgium
+Stanislav Lobotka|CDM|85|Napoli|Serie A|Slovakia
+Jan Oblak|GK|87|Atlético Madrid|La Liga|Slovenia
+Julián Álvarez|ST|87|Atlético Madrid|La Liga|Argentina
+Antoine Griezmann|CAM|85|Atlético Madrid|La Liga|France
+Alexander Sørloth|ST|83|Atlético Madrid|La Liga|Norway
+Álex Baena|CAM|85|Atlético Madrid|La Liga|Spain
+Nico Williams|LW|86|Athletic Club|La Liga|Spain
+Mikel Oyarzabal|ST|85|Real Sociedad|La Liga|Spain
+Martín Zubimendi|CDM|86|Arsenal|Premier League|Spain
+Benjamin Šeško|ST|84|Manchester United|Premier League|Slovenia
+Loïs Openda|ST|84|Juventus|Serie A|Belgium
+Xavi Simons|CAM|85|Tottenham|Premier League|Netherlands
+Désiré Doué|RW|86|PSG|Ligue 1|France
+Warren Zaïre-Emery|CM|84|PSG|Ligue 1|France
+Randal Kolo Muani|ST|82|Tottenham|Premier League|France
+Victor Osimhen|ST|87|Galatasaray|Süper Lig|Nigeria
+Leroy Sané|RW|84|Galatasaray|Süper Lig|Germany
+Mauro Icardi|ST|82|Galatasaray|Süper Lig|Argentina
+Hakan? Example|CM|65|Example FC|Other|Other`.split('\n').filter(x=>!x.startsWith('Hakan?')).map((x,i)=>{let [name,pos,rating,club,league,country]=x.split('|');return {id:'p'+i,name,pos,rating:+rating,club,league,country}});
+const legends=[
+{id:'legend_iniesta',name:'Andrés Iniesta',pos:'CM',rating:95,club:'FC Barcelona Legends',league:'Legender',country:'Spain',unlock:70},
+{id:'legend_xavi',name:'Xavi',pos:'CM',rating:95,club:'FC Barcelona Legends',league:'Legender',country:'Spain',unlock:75},
+{id:'legend_ronaldinho',name:'Ronaldinho',pos:'LW',rating:96,club:'AC Milan Legends',league:'Legender',country:'Brazil',unlock:80},
+{id:'legend_zidane',name:'Zinedine Zidane',pos:'CAM',rating:97,club:'Real Madrid Legends',league:'Legender',country:'France',unlock:85},
+{id:'legend_pele',name:'Pelé',pos:'ST',rating:99,club:'Santos Legends',league:'Legender',country:'Brazil',unlock:90}
+];
+function bestScore(){return Number(localStorage.getItem('sb_best_score')||0)}
+let extraPlayers=[];try{extraPlayers=JSON.parse(localStorage.getItem('sb_extra_players')||'[]')}catch(e){}
+const guaranteedPlayers=[{id:'taha_ali',name:'Taha Ali',pos:'LW',rating:76,club:'Malmö FF',league:'Allsvenskan',country:'Sweden',unverified:true},{id:'yan_diomande',name:'Yan Diomandé',pos:'LW',rating:78,club:'RB Leipzig',league:'Bundesliga',country:'Côte d’Ivoire',unverified:true}];
+let players=[...data,...guaranteedPlayers,...extraPlayers,...legends.filter(p=>JSON.parse(localStorage.getItem('sb_owned_rares')||'[]').includes(p.id))],selected=Array(11).fill(null),active=0;const $=x=>document.getElementById(x);const formations={'4-3-3':[['LW',17,17],['ST',50,12],['RW',83,17],['CM',22,40],['CDM',50,48],['CM',78,40],['LB',12,72],['CB',37,76],['CB',63,76],['RB',88,72],['GK',50,92]],'4-4-2':[['ST',35,14],['ST',65,14],['LM',13,40],['CM',38,43],['CM',62,43],['RM',87,40],['LB',12,72],['CB',37,76],['CB',63,76],['RB',88,72],['GK',50,92]],'3-5-2':[['ST',35,14],['ST',65,14],['LM',12,39],['CM',34,39],['CAM',50,29],['CM',66,39],['RM',88,39],['CB',25,75],['CB',50,78],['CB',75,75],['GK',50,92]]};function compatible(a,b){if(a===b)return 1;const groups=[['ST'],['LW','LM'],['RW','RM'],['CAM','CM'],['CDM','CM'],['LB','CB'],['RB','CB']];return groups.some(g=>g.includes(a)&&g.includes(b))?.7:.3}function rating(){let chosen=selected.filter(Boolean);if(chosen.length!==11)return 0;let positions=formations[$('formation').value],q=chosen.reduce((s,p)=>s+p.rating,0)/11;let fit=chosen.reduce((s,p,i)=>s+compatible(p.pos,positions[i][0]),0)/11*100;let counts={};chosen.forEach(p=>counts[p.club]=(counts[p.club]||0)+1);let chemistry=chosen.reduce((s,p)=>s+Math.min(100,45+(counts[p.club]-1)*11+chosen.filter(t=>t.country===p.country).length*5),0)/11;let def=chosen.filter((_,i)=>positions[i][0]==='GK'||['CB','LB','RB'].includes(positions[i][0])).reduce((s,p)=>s+p.rating,0)/Math.max(1,positions.filter(p=>['GK','CB','LB','RB'].includes(p[0])).length);let attack=chosen.filter((_,i)=>['ST','LW','RW'].includes(positions[i][0])).reduce((s,p)=>s+p.rating,0)/Math.max(1,positions.filter(p=>['ST','LW','RW'].includes(p[0])).length);let balance=Math.max(30,100-Math.abs(def-attack)*4);let raw=(q*.4+chemistry*.25+fit*.2+balance*.15);let score=Math.round(100*Math.pow(raw/100,2.7));$('breakdown').textContent=`Kvalitet ${q.toFixed(0)} · Kemi ${chemistry.toFixed(0)} · Positioner ${fit.toFixed(0)} · Balans ${balance.toFixed(0)}. ${score>=80?'💎 ELITLAG!':score>=70?'🟢 Mycket bra!':'Fortsätt förbättra laget!'}`;return score}function render(){let formation=formations[$('formation').value];$('pitch').innerHTML='';formation.forEach(([pos,x,y],i)=>{let b=document.createElement('button');b.className='slot';b.style.left=x+'%';b.style.top=y+'%';b.style.borderColor=i===active?'#fff':'#e6cc75';b.innerHTML=`<strong>${selected[i]?.name||'+ Välj spelare'}</strong><small>${pos}${selected[i]?' · '+selected[i].rating:''}</small>`;b.onclick=()=>{active=i;render()};$('pitch').append(b)});$('picktitle').textContent='Välj spelare: '+formation[active][0];$('score').textContent=rating()+'%';if(selected.some(x=>!x))$('breakdown').textContent=`${selected.filter(Boolean).length}/11 spelare valda. Fyll laget för att få betyg.`;renderPlayers()}// Online search extends the original SquadBattle 5 design without changing it.
+let onlineTimer=0,onlineSerial=0;
+function normalizeName(s){return String(s||'').normalize('NFD').replace(/[\u0300-\u036f]/g,'').toLocaleLowerCase().replace(/[^a-z0-9 ]/g,' ').replace(/\s+/g,' ').trim()}
+function scheduleOnlineSearch(){clearTimeout(onlineTimer);let q=$('search').value.trim();++onlineSerial;if(q.length<3){$('searchstatus').textContent='Skriv minst 3 bokstäver för att söka fler spelare på nätet.';return}onlineTimer=setTimeout(()=>searchOnline(q,onlineSerial),500)}
+function inferPosition(desc){let d=(desc||'').toLowerCase();if(/goalkeeper|målvakt|gardien de but|torwart|portero/.test(d))return 'GK';if(/centre.back|center.back|central defender|mittback/.test(d))return 'CB';if(/left.back|vänsterback/.test(d))return 'LB';if(/right.back|högerback/.test(d))return 'RB';if(/winger|ytter|ailier/.test(d))return 'LW';if(/midfielder|mittfält|milieu de terrain/.test(d))return 'CM';if(/forward|striker|anfallare|attacker|avant.centre/.test(d))return 'ST';return null}
+async function searchOnline(q,serial){
+ $('searchstatus').textContent='🌍 Söker i Wikidata på svenska och engelska...';
+ try{
+  const searches=await Promise.all(['en','sv'].map(async language=>{
+   const url='https://www.wikidata.org/w/api.php?action=wbsearchentities&format=json&origin=*&language='+language+'&uselang='+language+'&limit=50&search='+encodeURIComponent(q);
+   const r=await fetch(url);if(!r.ok)throw Error('Nätverksfel');return (await r.json()).search||[];
+  }));
+  if(serial!==onlineSerial)return;
+  const candidates=[...new Map(searches.flat().map(x=>[x.id,x])).values()].slice(0,75);
+  if(!candidates.length){$('searchstatus').textContent='Inga träffar i Wikidata. Prova förnamn + efternamn.';return}
+  const ids=candidates.map(x=>x.id).join('|');
+  const detailsUrl='https://www.wikidata.org/w/api.php?action=wbgetentities&format=json&origin=*&props=claims|labels|descriptions&languages=en|sv&ids='+encodeURIComponent(ids);
+  const r=await fetch(detailsUrl);if(!r.ok)throw Error('Nätverksfel');
+  const details=(await r.json()).entities||{};
+  if(serial!==onlineSerial)return;
+  let found=0,added=0;
+  for(const x of candidates){
+   const e=details[x.id];if(!e||e.missing!==undefined)continue;
+   const occupations=(e.claims?.P106||[]).map(c=>c.mainsnak?.datavalue?.value?.id);
+   const descriptions=[x.description,e.descriptions?.en?.value,e.descriptions?.sv?.value].filter(Boolean).join(' ');
+   const football=/football|soccer|fotboll|fußball|futbol|footballeur|calciator|soccer player/i.test(descriptions);
+   if(!football&&!occupations.includes('Q937857')&&!occupations.includes('Q15980158'))continue;
+   found++;
+   const name=e.labels?.en?.value||e.labels?.sv?.value||x.label;
+   if(players.some(p=>p.id==='wd_'+x.id||normalizeName(p.name)===normalizeName(name)))continue;
+   const pos=inferPosition(descriptions);
+   const p={id:'wd_'+x.id,name,pos:pos||'ANY',rating:65,club:'Okänd klubb ('+x.id+')',league:'Wikidata – ej verifierad',country:'Okänt',unverified:true};
+   players.push(p);extraPlayers.push(p);added++;
+  }
+  try{localStorage.setItem('sb_extra_players',JSON.stringify(extraPlayers.slice(-1500)))}catch(e){}
+  $('searchstatus').textContent=found?'🌍 '+found+' fotbollsspelare hittades, '+added+' nya tillagda. Nya spelares klubb/position kan saknas; betyg 65 är uppskattat.':'Inga verifierade fotbollsspelare hittades. Prova fullständigt namn eller annan stavning.';
+  leagues();$('league').value='';renderPlayers();
+ }catch(e){if(serial!==onlineSerial)return;$('searchstatus').textContent='⚠️ Kunde inte nå Wikidata. Kontrollera att du är online. Lokala spelare fungerar fortfarande.'}
+}
+// Reep v0: CC0 register (players AND coaches); fetches directly from the source, not via a paid API.
+// Load is opt-in to avoid consuming data or memory on every visit.
+const REEP_CSV='https://raw.githubusercontent.com/withqwerty/reep/main/data/people.csv';
+let bigRows=null,bigLoading=false,bigSearchTimer=0;
+function parseCSVLine(line){
+ const fields=[];let val='',quoted=false;
+ for(let i=0;i<line.length;i++){const c=line[i];if(c==='"'){if(quoted&&line[i+1]==='"'){val+='"';i++}else quoted=!quoted}else if(c===','&&!quoted){fields.push(val);val=''}else val+=c}
+ fields.push(val);return fields;
+}
+function positionFromReep(raw){const d=String(raw||'').toLowerCase();
+ if(/goalkeep/.test(d))return 'GK';if(/left.back/.test(d))return 'LB';if(/right.back/.test(d))return 'RB';if(/centre.back|center.back|defend|sweeper/.test(d))return 'CB';if(/defensive mid/.test(d))return 'CDM';if(/attacking mid/.test(d))return 'CAM';if(/right wing/.test(d))return 'RW';if(/left wing|winger/.test(d))return 'LW';if(/midfield/.test(d))return 'CM';if(/striker|centre.forward|center.forward|forward|attack/.test(d))return 'ST';return 'ANY';
+}
+function showBigMatches(){
+ if(!bigRows)return;
+ const q=normalizeName($('search').value);
+ if(q.length<2)return;
+ const seen=new Set(players.map(p=>normalizeName(p.name)));
+ let n=0;
+ for(const r of bigRows){
+  if(n>=80)break;
+  if(!r[4].includes(q)||seen.has(r[4]))continue;
+  const id='reep_'+r[0];if(players.some(p=>p.id===id))continue;
+  const p={id,name:r[1],pos:positionFromReep(r[2]),rating:65,club:'Okänd klubb',league:'Reep – klubb ej angiven',country:r[3]||'Okänt',unverified:true};
+  players.push(p);seen.add(r[4]);n++;
+ }
+ if(n){leagues();$('league').value='';}
+ $('searchstatus').textContent='📚 '+bigRows.length.toLocaleString('sv-SE')+' personposter inlästa från Reep. '+n+' nya matchningar. Klubb och betyg är inte verifierade.';
+ renderPlayers();
+}
+async function loadBigDatabase(){
+ if(bigRows){showBigMatches();return}
+ if(bigLoading)return;
+ bigLoading=true;$('loadbig').disabled=true;$('searchstatus').textContent='📥 Hämtar Reep-databasen. Den är stor och kan ta en stund...';
+ try{
+  const response=await fetch(REEP_CSV);if(!response.ok)throw Error('HTTP '+response.status);
+  if(!response.body)throw Error('Strömning stöds inte i webbläsaren');
+  const reader=response.body.getReader(),decoder=new TextDecoder();let carry='',header=null,rows=[],received=0;
+  while(true){
+   const {value,done}=await reader.read();if(done)break;
+   received+=value.byteLength;carry+=decoder.decode(value,{stream:true});
+   const lines=carry.split(/\r?\n/);carry=lines.pop();
+   for(const line of lines){if(!line)continue;
+    if(!header){header=parseCSVLine(line).map(s=>s.trim().toLowerCase().replace(/^\ufeff/,''));continue}
+    const parts=parseCSVLine(line);
+    const get=(k)=>parts[header.indexOf(k)]||'';
+    if(header.includes('type')&&get('type')&&get('type')!=='player')continue;
+    const id=get('reep_id'),name=get('name');if(!id||!name)continue;
+    rows.push([id,name,get('position'),get('nationality'),normalizeName(name+' '+get('full_name'))]);
+   }
+   if(received%(5*1024*1024)<value.byteLength)$('searchstatus').textContent='📥 Hämtat '+Math.round(received/1048576)+' MB · '+rows.length.toLocaleString('sv-SE')+' poster...';
+  }
+  carry+=decoder.decode();if(carry.trim()&&header){const parts=parseCSVLine(carry);const get=k=>parts[header.indexOf(k)]||'';if(get('reep_id')&&get('name'))rows.push([get('reep_id'),get('name'),get('position'),get('nationality'),normalizeName(get('name')+' '+get('full_name'))]);}
+  if(rows.length<1000)throw Error('Databasen innehöll för få poster');
+  bigRows=rows;$('loadbig').textContent='📚 Databas laddad ✓';
+  $('searchstatus').textContent='📚 '+rows.length.toLocaleString('sv-SE')+' personposter tillgängliga. Sök på ett namn!';
+  showBigMatches();
+ }catch(err){$('searchstatus').textContent='⚠️ Stora databasen gick inte att ladda ('+err.message+'). Vanlig sökning fungerar fortfarande.';$('loadbig').disabled=false}
+ finally{bigLoading=false}
+}
+$('loadbig').onclick=loadBigDatabase;
+function renderPlayers(){
+let q=normalizeName($('search').value),league=$('league').value;
+let position=formations[$('formation').value][active][0];
+let found=players.filter(p=>(p.pos==='ANY'||compatible(p.pos,position)>=.7)&&normalizeName(p.name+' '+p.club+' '+p.country).includes(q)&&(!league||p.league===league)).sort((a,b)=>$('sort').value==='name'?a.name.localeCompare(b.name):b.rating-a.rating).slice(0,100);
+$('unlockstatus').textContent='🏆 Bästa resultat: '+bestScore()+' %. Sällsynta spelare finns under ✦ UNLOCK RARE.';
+$('results').innerHTML='';found.forEach(p=>{
+let div=document.createElement('div');div.className='player';let t=document.createElement('div');let strong=document.createElement('strong');strong.textContent=p.name+' · '+p.rating;t.append(strong);
+let small=document.createElement('div');small.className='muted';small.textContent=(p.pos==='ANY'?'Position ej verifierad':p.pos)+' · '+p.club+' · '+p.country+(p.unverified?' · Betyg är uppskattat, inte officiellt':'');t.append(small);
+let btn=document.createElement('button');let locked=p.unlock&&bestScore()<p.unlock;
+btn.textContent=locked?'🔒 '+p.unlock+' %':'Välj';btn.disabled=!!locked;
+if(locked){btn.style.background='#555';btn.title='Spara ett lag med minst '+p.unlock+' % för att låsa upp';}
+btn.onclick=()=>{
+if(selected.some((s,i)=>s?.id===p.id&&i!==active)){alert('Spelaren finns redan i laget!');return}
+let sameClub=selected.filter((s,i)=>s&&i!==active&&s.club===p.club).length;
+if(sameClub>=2){alert('Max 2 spelare från samma klubb! Du har redan två från '+p.club+'.');return}
+selected[active]=p.pos==='ANY'?{...p,pos:position}:p;if(p.id.startsWith('reep_')&&!extraPlayers.some(x=>x.id===p.id)){extraPlayers.push(p);try{localStorage.setItem('sb_extra_players',JSON.stringify(extraPlayers.slice(-1500)))}catch(e){}}let next=selected.findIndex((s,i)=>!s&&i!==active);if(next>=0)active=next;render()
+};div.append(t,btn);$('results').append(div)});
+if(!found.length)$('results').textContent='Inga spelare för den här positionen. Prova en annan position på planen eller kontrollera internet.'
+}
+function updateRareCount(){ $('rarecount').textContent=legends.filter(p=>JSON.parse(localStorage.getItem('sb_owned_rares')||'[]').includes(p.id)).length+'/'+legends.length; }
+const rareWiki={legend_iniesta:'Andrés_Iniesta',legend_xavi:'Xavi_(footballer,_born_1980)',legend_ronaldinho:'Ronaldinho',legend_zidane:'Zinedine_Zidane',legend_pele:'Pelé'};
+function rareCards(){
+ const grid=$('raregrid');grid.innerHTML='';
+ legends.forEach((p,i)=>{
+ const owned=JSON.parse(localStorage.getItem('sb_owned_rares')||'[]');const unlocked=owned.includes(p.id);const eligible=bestScore()>=p.unlock;const cost=[2000,3500,5000,8000,12000][i];
+ const card=document.createElement('article');card.className='rarecard '+(unlocked?'unlocked':'locked');
+ const portrait=document.createElement('div');portrait.className='portrait';
+ const fallback=document.createElement('div');fallback.className='portraitfallback';fallback.textContent=p.name.split(' ').map(x=>x[0]).join('').slice(0,2);portrait.append(fallback);
+ const img=document.createElement('img');img.alt='Foto av '+p.name;img.loading='lazy';img.onerror=()=>img.remove();portrait.append(img);
+ const tag=document.createElement('span');tag.className='rarity';tag.textContent=i>=3?'👑 ICON':'✦ RARE';portrait.append(tag);
+ const body=document.createElement('div');body.className='rarebody';
+ const name=document.createElement('h3');name.textContent=p.name;
+ const sub=document.createElement('p');sub.textContent=p.pos+' · '+p.rating+' OVR · '+p.country;
+ const progress=document.createElement('div');progress.className='progress';const bar=document.createElement('span');bar.style.width=Math.min(100,bestScore()/p.unlock*100)+'%';progress.append(bar);
+ const desc=document.createElement('small');desc.textContent=unlocked?'✓ ÄGD — REDO ATT SPELA':`Kräver ${p.unlock}% (rekord: ${bestScore()}%) + 🪙 ${cost.toLocaleString('sv-SE')}`;
+ const btn=document.createElement('button');btn.textContent=unlocked?'✓ Välj spelare':eligible?`🪙 Köp för ${cost.toLocaleString('sv-SE')}`:`🔒 Kräver ${p.unlock}%`;btn.disabled=!unlocked&&!eligible;
+ btn.onclick=()=>{if(!unlocked){if(coins()<cost){alert('Du behöver '+cost+' SB Coins. Du har '+coins()+'.');return}setCoins(coins()-cost);owned.push(p.id);localStorage.setItem('sb_owned_rares',JSON.stringify(owned));updateRareCount();rareCards();alert('🎉 Du köpte '+p.name+'!');return}if(!players.some(x=>x.id===p.id))players.push(p);$('raremodal').classList.remove('show');$('search').value=p.name;$('league').value='';let positions=formations[$('formation').value];let idx=positions.findIndex((slot,i)=>compatible(p.pos,slot[0])>=.7);if(idx>=0)active=idx;render();document.querySelector('#picktitle').scrollIntoView({behavior:'smooth',block:'start'});};
+ body.append(name,sub,progress,desc,btn);card.append(portrait,body);grid.append(card);
+ const wiki=rareWiki[p.id];fetch('https://en.wikipedia.org/w/api.php?action=query&titles='+encodeURIComponent(wiki)+'&prop=pageimages&format=json&pithumbsize=500&origin=*').then(r=>r.json()).then(j=>{let page=Object.values(j.query.pages)[0];if(page?.thumbnail?.source)img.src=page.thumbnail.source}).catch(()=>{});
+ });updateRareCount();
+}
+$('rarebtn').onclick=()=>{$('raremodal').classList.add('show');rareCards()};
+$('closeRare').onclick=()=>$('raremodal').classList.remove('show');
+$('raremodal').onclick=e=>{if(e.target===$('raremodal'))$('raremodal').classList.remove('show');};
+function renderTeams(){let teams=JSON.parse(localStorage.getItem('sb_teams')||'[]');$('teams').innerHTML='';teams.sort((a,b)=>b.score-a.score).forEach((t,i)=>{let div=document.createElement('div');div.className='team';let name=document.createElement('span');name.textContent=`${i+1}. ${t.name} — ${t.score}%`;let load=document.createElement('button');load.textContent='Visa';load.onclick=()=>{selected=t.ids.map(id=>players.find(p=>p.id===id)||null);$('formation').value=t.formation;$('teamname').value=t.name;render()};div.append(name,load);$('teams').append(div)})}function leagues(){let prev=$('league').value;$('league').innerHTML='<option value="">Alla ligor</option>';[...new Set(players.map(p=>p.league))].sort().forEach(l=>{let o=document.createElement('option');o.value=l;o.textContent=l;$('league').append(o)});$('league').value=prev} $('formation').onchange=()=>{selected=Array(11).fill(null);active=0;render()};$('search').oninput=()=>{renderPlayers();if(bigRows){clearTimeout(bigSearchTimer);bigSearchTimer=setTimeout(showBigMatches,250)}else scheduleOnlineSearch()};$('searchmore').onclick=()=>{clearTimeout(onlineTimer);const q=$('search').value.trim();if(q.length<2){$('searchstatus').textContent='Skriv minst 2 bokstäver först.';return}searchOnline(q,++onlineSerial)};$('league').onchange=renderPlayers;$('sort').onchange=renderPlayers;$('reset').onclick=()=>{if(confirm('Rensa laget?')){selected=Array(11).fill(null);render()}};$('save').onclick=()=>{if(selected.some(x=>!x)){alert('Välj först 11 spelare!');return}let teams=JSON.parse(localStorage.getItem('sb_teams')||'[]');teams.push({name:$('teamname').value.trim()||'Namnlöst lag',score:rating(),ids:selected.map(p=>p.id),formation:$('formation').value});localStorage.setItem('sb_teams',JSON.stringify(teams));let score=rating();let before=bestScore();if(score>before)localStorage.setItem('sb_best_score',String(score));let unlocked=legends.filter(p=>p.unlock>before&&p.unlock<=score).map(p=>p.name);renderTeams();renderPlayers();updateRareCount();alert('Laget sparat!'+(unlocked.length?' 🎉 Nu kan du köpa: '+unlocked.join(', '):''))};leagues();render();renderTeams();updateRareCount();
+
+// Daily spin: outcome is decided at click, shown only after a smooth visible animation.
+const spinPrizes=[50,100,25,150,75,250,50,500];
+const spinColors=['#7d3dce','#177d99','#c65a9e','#2564c2','#6538b5','#159a88','#9951d3','#d2932d'];
+const spinCanvas=document.getElementById('wheelcanvas'),spinCtx=spinCanvas.getContext('2d');
+let wheelAngle=0,spinning=false;
+function coins(){return Number(localStorage.getItem('sb_coins')||0)}
+function setCoins(v){localStorage.setItem('sb_coins',String(v));document.getElementById('wallet').textContent='🪙 '+v.toLocaleString('sv-SE')}
+function nextSpin(){return Number(localStorage.getItem('sb_last_spin')||0)+86400000}
+function drawWheel(){const c=spinCtx,w=700,mid=350,r=328,step=2*Math.PI/spinPrizes.length;c.clearRect(0,0,w,w);c.save();c.translate(mid,mid);c.rotate(wheelAngle);spinPrizes.forEach((prize,i)=>{let a=-Math.PI/2+i*step; c.beginPath();c.moveTo(0,0);c.arc(0,0,r,a,a+step);c.closePath();c.fillStyle=spinColors[i];c.fill();c.lineWidth=6;c.strokeStyle='#ffdb85';c.stroke();c.save();c.rotate(a+step/2);c.translate(230,0);c.rotate(Math.PI/2);c.fillStyle='white';c.textAlign='center';c.font='bold 39px system-ui';c.fillText(String(prize),0,10);c.restore()});c.restore();c.beginPath();c.arc(mid,mid,r+5,0,Math.PI*2);c.strokeStyle='#f8d783';c.lineWidth=17;c.stroke()}
+function spinStatus(){let left=nextSpin()-Date.now(),b=document.getElementById('spincenter');if(spinning)return;if(left>0){let h=Math.floor(left/3600000),m=Math.ceil((left%3600000)/60000);b.disabled=true;b.textContent='✓';document.getElementById('spintimer').textContent=`Nästa snurr om ${h} h ${m} min`;}else{b.disabled=false;b.textContent='SPIN';document.getElementById('spintimer').textContent='Ditt gratis snurr är redo!'}}
+document.getElementById('spinbtn').onclick=()=>{document.getElementById('spinmodal').classList.add('show');spinStatus();drawWheel()};
+document.getElementById('closespin').onclick=()=>{if(!spinning)document.getElementById('spinmodal').classList.remove('show')};
+document.getElementById('spinmodal').onclick=e=>{if(e.target===e.currentTarget&&!spinning)e.currentTarget.classList.remove('show')};
+document.getElementById('spincenter').onclick=()=>{if(spinning||Date.now()<nextSpin())return;spinning=true;const b=document.getElementById('spincenter');b.disabled=true;b.textContent='...';document.getElementById('spinresult').textContent='';const idx=Math.floor(Math.random()*spinPrizes.length),step=2*Math.PI/8,start=wheelAngle,full=2*Math.PI;let target=(-((idx+.5)*step))%full;let delta=((target-(start%full))%full+full)%full;let end=start+full*6+delta;const duration=5400,t0=performance.now();localStorage.setItem('sb_last_spin',String(Date.now()));function frame(now){let t=Math.min(1,(now-t0)/duration),ease=1-Math.pow(1-t,4);wheelAngle=start+(end-start)*ease;drawWheel();if(t<1){requestAnimationFrame(frame)}else{spinning=false;setCoins(coins()+spinPrizes[idx]);document.getElementById('spinresult').textContent='🎉 DU VANN '+spinPrizes[idx]+' SB COINS!';spinStatus()}}requestAnimationFrame(frame)};
+setCoins(coins());drawWheel();spinStatus();
+</script></body></html>
